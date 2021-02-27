@@ -21,6 +21,7 @@ export default class ball extends cc.Component{
     }
 
     set size(val:number){
+        if (!this.node.parent) return;
         this._size = val;
         this.lab.string = `${Math.pow(2,this.size)}`;
         this.lab.lineHeight = 40 + (this.size-1)*8;
