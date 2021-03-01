@@ -12,7 +12,12 @@ export default class main extends cc.Component{
     @property(cc.Node)
     miaozhun:cc.Node = null;
 
+    @property(cc.Prefab)
+    effect:cc.Prefab = null;
+
     onLoad(){
+        cc.director.on("playEffect",this.playEffect.bind(this));
+
         this.node.on(cc.Node.EventType.TOUCH_START,this.touchStart.bind(this),this);
         this.node.on(cc.Node.EventType.TOUCH_MOVE,this.touchMove.bind(this),this);
         this.node.on(cc.Node.EventType.TOUCH_END,this.touchEnd.bind(this),this);
@@ -33,6 +38,21 @@ export default class main extends cc.Component{
         })
         
     }
+
+    playEffect(){
+        this.node.off(cc.Node.EventType.TOUCH_START);
+        this.node.off(cc.Node.EventType.TOUCH_MOVE);
+        this.node.off(cc.Node.EventType.TOUCH_END);
+        this.node.off(cc.Node.EventType.TOUCH_CANCEL);
+        this.unscheduleAllCallbacks();
+        let effectNode = cc.instantiate(this.effect);
+        effectNode.parent = this.node;
+        effectNode.y = -350;
+        this.miaozhun.active = false;
+        this.scheduleOnce(()=>{
+            this.launchCom.hideAllBall();
+        },2)
+    }  
 
     touchMove(event:cc.Event.EventTouch){
         this.setBallPos(event);
@@ -67,9 +87,7 @@ export default class main extends cc.Component{
         let posX = this.node.width/2 - this.node.getChildByName("left").width - this.launchCom.currentBallNode.width/2-2;
         if(nodePos.x>posX || nodePos.x<-posX){
             let worldPos = this.node.convertToWorldSpaceAR(cc.v2(posX,0))
-            if(nodePos.x<-posX){
-                worldPos = this.node.convertToWorldSpaceAR(cc.v2(-posX,0))
-            }
+            nodePos.x<-posX && ( worldPos = this.node.convertToWorldSpaceAR(cc.v2(-posX,0)) )
             let spacePos = this.launchCom.node.convertToNodeSpaceAR(worldPos);
             this.launchCom.currentBallNode.setPosition(spacePos.x,0);
             this.miaozhun.x = spacePos.x;

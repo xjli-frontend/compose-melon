@@ -8,5 +8,7 @@ export default class scene extends cc.Component{
 
     //compose_melon
 
+ 
+
 
 }

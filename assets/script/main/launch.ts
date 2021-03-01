@@ -28,6 +28,7 @@ export default class launch extends cc.Component{
             ballNode = cc.instantiate(this.ballItem);
         }
         ballNode.parent = this.node;
+        ballNode.active = true;
         ballNode.scale = 1;
         ballNode.setPosition(0,0);
         ballNode.getComponent(cc.RigidBody).type = cc.RigidBodyType.Static;
@@ -40,10 +41,25 @@ export default class launch extends cc.Component{
         this.nextBallSize = this.getRandomSize();
         this.tip.num = Math.pow(2,this.nextBallSize);
         ballNode.getComponent(ball).endCallback = (target:cc.Node)=>{
+            target.active = false;
             this.ballPool.put(target);
         }
         this.currentBallNode = ballNode;
         return ballNode;
+    }
+
+    hideAllBall(){
+        // if(!this.currentBallNode)return;
+        this.node.children.forEach((child:cc.Node)=>{
+            cc.tween(child)
+            .to(0.5,{scale:0})
+            .call(()=>{
+                child.active = false;
+                child.getComponent(ball).addScoreCallback();
+                this.ballPool.put(child);
+            })
+            .start()
+        })
     }
 
     getRandomSize(){

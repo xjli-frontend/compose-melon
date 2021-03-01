@@ -70,15 +70,20 @@ export default class ball extends cc.Component{
             if(selfCollider.node.y > otherCollider.node.y){
                 contact.disabled = true;
                 this.endCallback(otherCollider.node);
-                cc.director.emit("addScore",{addScore:5*this.size,target:selfCollider.node});
+                this.addScoreCallback();
                 this.size += 1;
+                if(this.size == 11){//11
+                    cc.director.emit("playEffect");
+                }
             }else{
 
             }
         }
     }
 
-
+    addScoreCallback(){
+        cc.director.emit("addScore",{addScore:5*this.size,target:this.node});
+    }
 
     update(){
         this.lab.node.angle = -this.node.angle;
