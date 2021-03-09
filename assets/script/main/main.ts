@@ -1,6 +1,7 @@
 import launch from "./launch";
 import LoadingIndicator from "./turnaround";
 import turnaround from "./turnaround";
+import ball from "./ball";
 
 const {ccclass, property} = cc._decorator;
 @ccclass
@@ -70,6 +71,7 @@ export default class main extends cc.Component{
         this.launchCom.currentBallNode.getComponent(cc.RigidBody).type = cc.RigidBodyType.Dynamic;
         this.launchCom.currentBallNode.getComponent(cc.RigidBody).linearVelocity = cc.v2(0,-600);
         this.launchCom.currentBallNode.removeComponent(turnaround);
+        this.launchCom.currentBallNode.getComponent(ball).motionStreak.node.removeComponent(cc.MotionStreak);
         this.launchCom.currentBallNode = null;
         this.miaozhun.active = false;
         this.scheduleOnce(()=>{

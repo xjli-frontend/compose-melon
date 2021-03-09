@@ -13,6 +13,9 @@ export default class ball extends cc.Component{
 
     @property(cc.Label)
     lab:cc.Label = null;
+    
+    @property(cc.MotionStreak)
+    motionStreak:cc.MotionStreak = null;
 
     _size:number = 2;
 
@@ -28,6 +31,12 @@ export default class ball extends cc.Component{
         this.lab.fontSize = 30 + (this.size-1)*8;
         this.node.width = 40 + 20* this._size;
         this.node.height = 40 + 20* this._size;
+        let spr = this.node.getChildByName("spr");
+        if(spr){
+            spr.width = this.node.width;
+            spr.height = this.node.height;
+        }
+        this.motionStreak.stroke = this.node.width;
         this.node.getComponent(cc.PhysicsCircleCollider).radius = this.node.width/2;
         this.node.getComponent(cc.PhysicsCircleCollider).apply();
     }
@@ -62,6 +71,7 @@ export default class ball extends cc.Component{
     }
 
     onPreSolve(contact:cc.PhysicsContact, selfCollider:cc.PhysicsCircleCollider, otherCollider:cc.PhysicsCircleCollider) {
+        if (!this.node.parent) return;
         let selfBallCom = selfCollider.node.getComponent(ball);
         let otherBallCom = otherCollider.node.getComponent(ball);
         if(otherCollider.tag == 0){
